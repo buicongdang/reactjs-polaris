@@ -6,7 +6,7 @@ import {
 import {Provider, NavigationMenu, Loading} from '@shopify/app-bridge-react';
 
 import createApp from '@shopify/app-bridge';
-// import '@shopify/polaris/dist/styles.css'
+import "@shopify/polaris/build/esm/styles.css";
 import translations from '@shopify/polaris/locales/en.json';
 import {AppProvider} from '@shopify/polaris'
 import About from './pages/About'
@@ -20,26 +20,23 @@ const config = {
 };
 
 const app = createApp(config);
-// const app = {}
 const router = createBrowserRouter([
   {
     path: "/",
-    element : <Home app={app} />,
+    element : <Home />,
     errorElement: <ErrorPage />,
   },
   {
     path: "about",
-    element : <About app={app} />
+    element : <About />
   },
   {
     path: "contact",
-    element : <Contact app={app} />
+    element : <Contact />
   },
 ]);
 
 function App() {
-  const loading = true;
-  const loadingComponent = loading ? <Loading /> : null;
   return (
     <Provider config={config}>
       <AppProvider i18n={translations}>
@@ -60,7 +57,7 @@ function App() {
             ]}
             matcher={(link, location) => link.destination === location.pathname}
           />
-          {loadingComponent}
+
           <RouterProvider router={router} />
       </AppProvider>
     </Provider>
