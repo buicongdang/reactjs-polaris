@@ -1,17 +1,20 @@
-import './App.css';
+import React from "react";
 import {
   createBrowserRouter,
   RouterProvider
 } from "react-router-dom";
-import createApp from '@shopify/app-bridge';
+import {Provider, NavigationMenu, Loading} from '@shopify/app-bridge-react';
 
-import Home from './Pages/Home';
-import About from './Pages/About';
-import {Provider, TitleBar} from '@shopify/app-bridge-react'
+import createApp from '@shopify/app-bridge';
+import '@shopify/polaris/dist/styles.css'
+import translations from '@shopify/polaris/locales/en.json';
+import {AppProvider} from '@shopify/polaris'
+import About from './pages/About'
+import Contact from './pages/Contact'
+import Home from './pages/Home'
+import ErrorPage from './ErrorPage'
 const config = {
-  // The client ID provided for your application in the Partner Dashboard.
   apiKey: "246f4f78014ed307ad0637416793df40",
-  // The host of the specific shop that's embedding your app. This value is provided by Shopify as a URL query parameter that's appended to your application URL when your app is loaded inside the Shopify admin.
   host: new URLSearchParams(window.location.search).get("host"),
   forceRedirect: true
 };
@@ -20,25 +23,47 @@ const app = createApp(config);
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home app={app} />
+    element : <Home app={app} />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "about",
-    element: <About app={app} />
+    element : <About app={app} />
+  },
+  {
+    path: "contact",
+    element : <Contact app={app} />
   },
 ]);
 
-
-
-
-
 function App() {
+  const loading = true;
+  const loadingComponent = loading ? <Loading /> : null;
   return (
     <Provider config={config}>
-      <TitleBar title="App Shopify Testing"/>
-      <RouterProvider router={router} />
+      <AppProvider i18n={translations}>
+        <NavigationMenu
+            navigationLinks={[
+              {
+                label: 'Home',
+                destination: '/'
+              },
+              {
+                label: 'About',
+                destination: '/about'
+              },
+              {
+                label: 'Contact',
+                destination: '/contact'
+              },
+            ]}
+            matcher={(link, location) => link.destination === location.pathname}
+          />
+          {loadingComponent}
+          <RouterProvider router={router} />
+      </AppProvider>
+        
     </Provider>
-    
   );
 }
 
